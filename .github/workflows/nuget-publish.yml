@@ -1,0 +1,20 @@
+name: NuGet Publish
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 6.0.x
+    - name: Pack
+      run: dotnet pack --include-symbols --include-source --configuration Release
+    - name: Publish
+      run: nuget push './**/NuSource.StringMatcherLib.*.nupkg' -Source 'https://api.nuget.org/v3/index.json' -ApiKey '${{ secrets.NUGET_DOT_ORG_API_KEY }}' -SkipDuplicate

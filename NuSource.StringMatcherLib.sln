@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuSource.StringMatcherLib.Test", "NuSource.StringMatcherLib.Test\NuSource.StringMatcherLib.Test.csproj", "{EA73D6DB-B125-484C-8104-6B87C206754B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuSource.StringMatcherLib", "NuSource.StringMatcherLib\NuSource.StringMatcherLib.csproj", "{730D7EAC-1D6C-45CC-8553-CDEFC99204B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA73D6DB-B125-484C-8104-6B87C206754B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA73D6DB-B125-484C-8104-6B87C206754B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA73D6DB-B125-484C-8104-6B87C206754B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA73D6DB-B125-484C-8104-6B87C206754B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{730D7EAC-1D6C-45CC-8553-CDEFC99204B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{730D7EAC-1D6C-45CC-8553-CDEFC99204B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{730D7EAC-1D6C-45CC-8553-CDEFC99204B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{730D7EAC-1D6C-45CC-8553-CDEFC99204B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
