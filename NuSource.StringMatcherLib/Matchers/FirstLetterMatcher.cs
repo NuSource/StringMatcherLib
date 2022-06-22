@@ -9,10 +9,8 @@ namespace NuSource.StringMatcherLib.Matchers;
 public class FirstLetterMatcher : IMatcher
 {
     public MatchType Type { get; }
-    
-    public Dictionary<string, string> MatchOptions { get; }
-    
-    public MatchResult Match(string str1, string str2)
+
+    public MatchResult Match(string? str1, string? str2)
     {
         throw new NotImplementedException();
     }

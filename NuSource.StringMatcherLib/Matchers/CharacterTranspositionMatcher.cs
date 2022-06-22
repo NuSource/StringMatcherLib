@@ -14,7 +14,7 @@ public class CharacterTranspositionMatcher : IMatcher
 {
     public MatchType Type => MatchType.CharacterTransposition;
 
-    private int _numberOfTranspositions;
+    private readonly int _numberOfTranspositions;
 
     /// <summary>
     ///   Defaults the number of transposed characters to 1.
@@ -112,45 +112,48 @@ public class CharacterTranspositionMatcher : IMatcher
             char str1char = str1chars[str1itr];
             char str2char = str2chars[str2itr];
 
-            if (str1char != str2char)
+            if (str1char == str2char)
             {
-                
-                if (str1itr + 1 < str1chars.Length && str2itr + 1 < str2chars.Length)
+                str1itr++;
+                str2itr++;
+                continue;
+            }
+
+            // If there is a next character available we need to check it also.
+            if (str1itr + 1 < str1chars.Length && str2itr + 1 < str2chars.Length)
+            {
+                // First check if the char is just swapped with the next one
+                if (AreSwapped(str1char, str1chars[str1itr + 1], str2char, str2chars[str2itr + 1]))
                 {
-                    // First check if the char is just swapped with the next one
-                    if (AreSwapped(str1char, str1chars[str1itr + 1], str2char, str2chars[str2itr + 1]))
-                    {
-                        transpositions++;
-                        
-                        // Skip next char, since we just checked it.
-                        str1itr += 2; 
-                        str2itr += 2;
-                        continue;
-                    }
+                    transpositions++;
                     
-                    // Char added to str1
-                    if (IsAddedChar(str2char, str1chars[str1itr + 1]))
-                    {
-                        transpositions++;
-                        // Skip the next char in this string to get them back to the same place.
-                        str1itr++;
-                        continue;
-                    }
-                    
-                    // Char added to str2
-                    if (IsAddedChar(str1char, str2chars[str2itr + 1]))
-                    {
-                        transpositions++;
-                        // Skip the next char in this string to get them back to the same place.
-                        str2itr++;
-                        continue;
-                    }
+                    // Skip next char, since we just checked it.
+                    str1itr += 2; 
+                    str2itr += 2;
+                    continue;
                 }
                 
-                // So it wasn't a swap, we count it as just a typo character then.
-                transpositions++;
+                // Char added to str1
+                if (IsAddedChar(str2char, str1chars[str1itr + 1]))
+                {
+                    transpositions++;
+                    // Skip the next char in this string to get them back to the same place.
+                    str1itr++;
+                    continue;
+                }
+                
+                // Char added to str2
+                if (IsAddedChar(str1char, str2chars[str2itr + 1]))
+                {
+                    transpositions++;
+                    // Skip the next char in this string to get them back to the same place.
+                    str2itr++;
+                    continue;
+                }
             }
             
+            // So it wasn't a swap, we count it as just a typo character then.
+            transpositions++;
             str1itr++; 
             str2itr++;
         }
