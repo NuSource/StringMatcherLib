@@ -3,7 +3,7 @@
 NuGet package link: https://www.nuget.org/packages/NuSource.StringMatcherLib
 
 ## About
-A simple string comparison library.
+A simple string comparison library. Currently a work in progress, and should not be used for any production software.
 
 ## Contributing
 ### Questions/Discussions
