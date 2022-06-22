@@ -1,6 +1,9 @@
-# StringMatcherLib
+# StringMatcherLib [![NuGet Publish](https://github.com/NuSource/StringMatcherLib/actions/workflows/nuget-publish.yml/badge.svg?branch=main)](https://github.com/NuSource/StringMatcherLib/actions/workflows/nuget-publish.yml)
+
+NuGet package link: https://www.nuget.org/packages/NuSource.StringMatcherLib
+
 ## About
-Work in progress, stay tuned for updates.
+A simple string comparison library.
 
 ## Contributing
 ### Questions/Discussions
