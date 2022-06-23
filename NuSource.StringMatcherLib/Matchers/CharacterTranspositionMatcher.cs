@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NuSource.StringMatcherLib.Constants;
 using NuSource.StringMatcherLib.Enums;
 using NuSource.StringMatcherLib.Exceptions;
 using NuSource.StringMatcherLib.Interface;
@@ -14,7 +15,7 @@ public class CharacterTranspositionMatcher : IMatcher
 {
     public MatchType Type => MatchType.CharacterTransposition;
 
-    private int _numberOfTranspositions;
+    private readonly int _numberOfTranspositions;
 
     /// <summary>
     ///   Defaults the number of transposed characters to 1.
@@ -27,19 +28,19 @@ public class CharacterTranspositionMatcher : IMatcher
     /// <summary>
     ///   Allows you to set the number of characters that can be transposed.
     /// </summary>
-    /// <param name="matchOptions">Set key "NumberOfTranspositions" with the number of transpositions to allow.</param>
-    public CharacterTranspositionMatcher(Dictionary<string, string> matchOptions)
+    /// <param name="matchOptions">Set key [MatchOptionsKeys.NumberOfTranspositions] with the number of transpositions to allow.</param>
+    public CharacterTranspositionMatcher(Dictionary<string, string>? matchOptions)
     {
-        if (!matchOptions.ContainsKey("NumberOfTranspositions"))
+        if (matchOptions == null || !matchOptions.ContainsKey(MatchOptionsKeys.NumberOfTranspositions))
         {
-            throw new InvalidMatcherOptionsException($"Missing key 'NumberOfTranspositions' in {nameof(matchOptions)}");
+            throw new InvalidMatcherOptionsException($"Missing key '{MatchOptionsKeys.NumberOfTranspositions}' in {nameof(matchOptions)}");
         }
 
-        bool success = int.TryParse(matchOptions["NumberOfTranspositions"], out _numberOfTranspositions);
+        bool success = int.TryParse(matchOptions[MatchOptionsKeys.NumberOfTranspositions], out _numberOfTranspositions);
 
         if (!success)
         {
-            throw new InvalidMatcherOptionsException($"Invalid value given for 'NumberOfTranspositions' in {nameof(matchOptions)}");
+            throw new InvalidMatcherOptionsException($"Invalid value given for '{MatchOptionsKeys.NumberOfTranspositions}' in {nameof(matchOptions)}");
         }
     }
 
@@ -54,7 +55,7 @@ public class CharacterTranspositionMatcher : IMatcher
                 HasWarnings = true,
                 Warnings = new()
                 {
-                    "Input is null."
+                    WarningFlags.NullInput
                 }
             };
         }
@@ -112,45 +113,48 @@ public class CharacterTranspositionMatcher : IMatcher
             char str1char = str1chars[str1itr];
             char str2char = str2chars[str2itr];
 
-            if (str1char != str2char)
+            if (str1char == str2char)
             {
-                
-                if (str1itr + 1 < str1chars.Length && str2itr + 1 < str2chars.Length)
+                str1itr++;
+                str2itr++;
+                continue;
+            }
+
+            // If there is a next character available we need to check it also.
+            if (str1itr + 1 < str1chars.Length && str2itr + 1 < str2chars.Length)
+            {
+                // First check if the char is just swapped with the next one
+                if (AreSwapped(str1char, str1chars[str1itr + 1], str2char, str2chars[str2itr + 1]))
                 {
-                    // First check if the char is just swapped with the next one
-                    if (AreSwapped(str1char, str1chars[str1itr + 1], str2char, str2chars[str2itr + 1]))
-                    {
-                        transpositions++;
-                        
-                        // Skip next char, since we just checked it.
-                        str1itr += 2; 
-                        str2itr += 2;
-                        continue;
-                    }
+                    transpositions++;
                     
-                    // Char added to str1
-                    if (IsAddedChar(str2char, str1chars[str1itr + 1]))
-                    {
-                        transpositions++;
-                        // Skip the next char in this string to get them back to the same place.
-                        str1itr++;
-                        continue;
-                    }
-                    
-                    // Char added to str2
-                    if (IsAddedChar(str1char, str2chars[str2itr + 1]))
-                    {
-                        transpositions++;
-                        // Skip the next char in this string to get them back to the same place.
-                        str2itr++;
-                        continue;
-                    }
+                    // Skip next char, since we just checked it.
+                    str1itr += 2; 
+                    str2itr += 2;
+                    continue;
                 }
                 
-                // So it wasn't a swap, we count it as just a typo character then.
-                transpositions++;
+                // Char added to str1
+                if (IsAddedChar(str2char, str1chars[str1itr + 1]))
+                {
+                    transpositions++;
+                    // Skip the next char in this string to get them back to the same place.
+                    str1itr++;
+                    continue;
+                }
+                
+                // Char added to str2
+                if (IsAddedChar(str1char, str2chars[str2itr + 1]))
+                {
+                    transpositions++;
+                    // Skip the next char in this string to get them back to the same place.
+                    str2itr++;
+                    continue;
+                }
             }
             
+            // So it wasn't a swap, we count it as just a typo character then.
+            transpositions++;
             str1itr++; 
             str2itr++;
         }

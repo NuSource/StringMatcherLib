@@ -8,12 +8,28 @@ namespace NuSource.StringMatcherLib.Matchers;
 
 public class StringComparisonMatcher : IMatcher
 {
-    public MatchType Type { get; }
+    public MatchType Type => MatchType.StringComparison;
     
-    public Dictionary<string, string> MatchOptions { get; }
-    
-    public MatchResult Match(string str1, string str2)
+    public MatchResult Match(string? str1, string? str2)
     {
-        throw new NotImplementedException();
+        if (str1 == null || str2 == null)
+        {
+            return new MatchResult()
+            {
+                MatchTypeUsed = this.Type,
+                IsMatch = false,
+                HasWarnings = true,
+                Warnings = new()
+                {
+                    WarningFlags.NullInput
+                }
+            };
+        }
+        
+        return new MatchResult()
+        {
+            MatchTypeUsed = Type,
+            IsMatch = (string.CompareOrdinal(str1, str2) == 0)
+        };
     }
 }

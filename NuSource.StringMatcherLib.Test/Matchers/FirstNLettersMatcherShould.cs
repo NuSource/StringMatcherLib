@@ -11,20 +11,20 @@ using Xunit;
 
 namespace NuSource.StringMatcherLib.Test.Matchers;
 
-public static class CharacterTranspositionMatcherShould
+public static class FirstNLettersMatcherShould
 {
-    #region CharacterTranspositionMatcher()
+    #region FirstNLettersMatcher()
 
     [Fact]
     public static void CtorDefault_ShouldNotThrow()
     {
-        Action act = () => new CharacterTranspositionMatcher();
+        Action act = () => new FirstNLettersMatcher();
         act.Should().NotThrow();
     }
     
     #endregion
     
-    #region CharacterTranspositionMatcher(Dictionary<string, string>? matchOptions)
+    #region FirstNLettersMatcher(Dictionary<string, string>? matchOptions)
 
     [Theory]
     [InlineData(0)]
@@ -33,9 +33,9 @@ public static class CharacterTranspositionMatcherShould
     [InlineData(int.MinValue)]
     public static void Ctor_ShouldNotThrow_ForValidOptions(int chars)
     {
-        Action act = () => new CharacterTranspositionMatcher(new ()
+        Action act = () => new FirstNLettersMatcher(new ()
         {
-            { MatchOptionsKeys.NumberOfTranspositions, chars.ToString() }
+            { MatchOptionsKeys.NumberOfCharacters, chars.ToString() }
         });
         
         act.Should().NotThrow();
@@ -44,33 +44,33 @@ public static class CharacterTranspositionMatcherShould
     [Fact]
     public static void Ctor_ShouldThrow_ForNullMatchOptions()
     {
-        Action act = () => new CharacterTranspositionMatcher(null);
+        Action act = () => new FirstNLettersMatcher(null);
         act.Should().Throw<InvalidMatcherOptionsException>();
     }
     
     [Fact]
     public static void Ctor_ShouldThrow_ForKeyMissing()
     {
-        Action act = () => new CharacterTranspositionMatcher(new());
+        Action act = () => new FirstNLettersMatcher(new());
         act.Should().Throw<InvalidMatcherOptionsException>();
     }
     
     [Fact]
-    public static void Ctor_ShouldThrow_ForNullNumberOfTranspositions()
+    public static void Ctor_ShouldThrow_ForNullNumberOfCharacters()
     {
-        Action act = () => new CharacterTranspositionMatcher(new ()
+        Action act = () => new FirstNLettersMatcher(new ()
         {
-            { MatchOptionsKeys.NumberOfTranspositions, null! }
+            { MatchOptionsKeys.NumberOfCharacters, null! }
         });
         act.Should().Throw<InvalidMatcherOptionsException>();
     }
     
     [Fact]
-    public static void Ctor_ShouldThrow_ForInvalidNumberOfTranspositions()
+    public static void Ctor_ShouldThrow_ForInvalidNumberOfCharacters()
     {
-        Action act = () => new CharacterTranspositionMatcher(new ()
+        Action act = () => new FirstNLettersMatcher(new ()
         {
-            { MatchOptionsKeys.NumberOfTranspositions, "Unit McTester" }
+            { MatchOptionsKeys.NumberOfCharacters, "Unit McTester" }
         });
         act.Should().Throw<InvalidMatcherOptionsException>();
     }
@@ -83,33 +83,33 @@ public static class CharacterTranspositionMatcherShould
     [InlineData("Strong", "Stronk")]
     [InlineData("Strong", "String")]
     [InlineData("Rupert", "Rpuert")]
-    public static void Match_ShouldMatch_1Transposed(string str1, string str2)
+    public static void Match_ShouldMatch_1Chars(string str1, string str2)
     {
-        IMatcher matcher = new CharacterTranspositionMatcher();
+        IMatcher matcher = new FirstNLettersMatcher();
         MatchResult actual = matcher.Match(str1, str2);
 
         actual.HasWarnings.Should().BeFalse();
         actual.IsMatch.Should().BeTrue();
-        actual.MatchTypeUsed.Should().Be(MatchType.CharacterTransposition);
+        actual.MatchTypeUsed.Should().Be(MatchType.FirstNLetters);
     }
     
     [Theory]
     [InlineData("Strong", "Strink")]
-    [InlineData("Strong", "Wrong")]
-    [InlineData("Robert", "Rupert")]
-    public static void Match_ShouldMatch_3Transposed(string str1, string str2)
+    [InlineData("Strong", "String")]
+    [InlineData("Robert", "Roburt")]
+    public static void Match_ShouldMatch_3Chars(string str1, string str2)
     {
         Dictionary<string, string> matchOptions = new()
         {
-            { MatchOptionsKeys.NumberOfTranspositions, "3" }
+            { MatchOptionsKeys.NumberOfCharacters, "3" }
         };
         
-        IMatcher matcher = new CharacterTranspositionMatcher(matchOptions);
+        IMatcher matcher = new FirstNLettersMatcher(matchOptions);
         MatchResult actual = matcher.Match(str1, str2);
 
         actual.HasWarnings.Should().BeFalse();
         actual.IsMatch.Should().BeTrue();
-        actual.MatchTypeUsed.Should().Be(MatchType.CharacterTransposition);
+        actual.MatchTypeUsed.Should().Be(MatchType.FirstNLetters);
     }
     
     [Theory]
@@ -118,28 +118,27 @@ public static class CharacterTranspositionMatcherShould
     [InlineData(null, null)]
     public static void Match_ShouldHandle_Nulls(string str1, string str2)
     {
-        IMatcher matcher = new CharacterTranspositionMatcher();
+        IMatcher matcher = new FirstNLettersMatcher();
         MatchResult actual = matcher.Match(str1, str2);
 
         actual.HasWarnings.Should().BeTrue();
         actual.IsMatch.Should().BeFalse();
-        actual.MatchTypeUsed.Should().Be(MatchType.CharacterTransposition);
+        actual.MatchTypeUsed.Should().Be(MatchType.FirstNLetters);
     }
     
     [Theory]
-    [InlineData("Strong", "Strink")]
-    [InlineData("Strong", "Strings")]
-    [InlineData("Who", "Where")]
-    public static void Match_ShouldNotMatch_1Transposed(string str1, string str2)
+    [InlineData("Strong", "Wrong")]
+    [InlineData("Wing", "Bling")]
+    [InlineData("Who", "You")]
+    public static void Match_ShouldNotMatch_1Chars(string str1, string str2)
     {
-        IMatcher matcher = new CharacterTranspositionMatcher();
+        IMatcher matcher = new FirstNLettersMatcher();
         MatchResult actual = matcher.Match(str1, str2);
 
         actual.HasWarnings.Should().BeFalse();
         actual.IsMatch.Should().BeFalse();
-        actual.MatchTypeUsed.Should().Be(MatchType.CharacterTransposition);
+        actual.MatchTypeUsed.Should().Be(MatchType.FirstNLetters);
     }
     
     #endregion
-    
 }

@@ -13,5 +13,5 @@ public class MatchResult
     // Warnings
     public bool HasWarnings { get; internal set; }
 
-    public List<string> Warnings { get; internal set; } = new();
+    public List<WarningFlags> Warnings { get; internal set; } = new();
 }
