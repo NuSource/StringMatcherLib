@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using NuSource.StringMatcherLib.Constants;
 using NuSource.StringMatcherLib.Enums;
 using NuSource.StringMatcherLib.Exceptions;
 using NuSource.StringMatcherLib.Interface;
@@ -27,19 +28,19 @@ public class CharacterTranspositionMatcher : IMatcher
     /// <summary>
     ///   Allows you to set the number of characters that can be transposed.
     /// </summary>
-    /// <param name="matchOptions">Set key "NumberOfTranspositions" with the number of transpositions to allow.</param>
-    public CharacterTranspositionMatcher(Dictionary<string, string> matchOptions)
+    /// <param name="matchOptions">Set key [MatchOptionsKeys.NumberOfTranspositions] with the number of transpositions to allow.</param>
+    public CharacterTranspositionMatcher(Dictionary<string, string>? matchOptions)
     {
-        if (!matchOptions.ContainsKey("NumberOfTranspositions"))
+        if (matchOptions == null || !matchOptions.ContainsKey(MatchOptionsKeys.NumberOfTranspositions))
         {
-            throw new InvalidMatcherOptionsException($"Missing key 'NumberOfTranspositions' in {nameof(matchOptions)}");
+            throw new InvalidMatcherOptionsException($"Missing key '{MatchOptionsKeys.NumberOfTranspositions}' in {nameof(matchOptions)}");
         }
 
-        bool success = int.TryParse(matchOptions["NumberOfTranspositions"], out _numberOfTranspositions);
+        bool success = int.TryParse(matchOptions[MatchOptionsKeys.NumberOfTranspositions], out _numberOfTranspositions);
 
         if (!success)
         {
-            throw new InvalidMatcherOptionsException($"Invalid value given for 'NumberOfTranspositions' in {nameof(matchOptions)}");
+            throw new InvalidMatcherOptionsException($"Invalid value given for '{MatchOptionsKeys.NumberOfTranspositions}' in {nameof(matchOptions)}");
         }
     }
 
@@ -54,7 +55,7 @@ public class CharacterTranspositionMatcher : IMatcher
                 HasWarnings = true,
                 Warnings = new()
                 {
-                    "Input is null."
+                    WarningFlags.NullInput
                 }
             };
         }
